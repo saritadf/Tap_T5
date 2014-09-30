@@ -9,7 +9,11 @@
 
 using namespace std;
 	char Mapa[10][10];
-	int iinicial, jinicial;
+	int iinicial, jinicial, ifinal, jfinal,tam,jugadori,jugadorj;
+	int Ci[3];
+    int Cj[3];
+    int Fi[3];
+    int Fj[3];
 
 struct NODO{
 int id;
@@ -33,19 +37,20 @@ bool Astar()
     list <NODO> CLOSE;
 
 	NODO node;
-
+    nodo.i=iinicial;
+    nodo.j=jinicial;
     node.costo = 0;
     node.heuristic = GetNodeHeuristic( node );
     node.f = node.costo + node.heuristic;
     node.parent = NULL;
-	node.char=Mapa[iinicial][jinicial];
+	node.valor=Mapa[iinicial][jinicial];
     node.id=0;
     CLOSE.insert(CLOSE.begin(),node);
 
 	while(OPEN.empty()){
 		node = OPEN.top();
 		OPEN.pop();
-		if (node.valor='F') {
+		if ((node.i==ifinal)&&(node.j==jfinal)){
 			//construct_path();
 			printf("GaNASTE!!!!!!");
 			return 1;
@@ -66,6 +71,41 @@ bool BuscarNodo(list<NODO> CLOSE, NODO X ){
 void NodePushSuccessors( priority_queue<NODO> OPEN, list<NODO> CLOSE, NODO parent_node )
 {
 		NODO nodonuevo;
+		//------------CADA REGLA-------------
+		pos[4]={+1,-1,0,0}
+		n=3;
+		for (int i=0;i<4;i++){
+            xi=pos[i];
+            xj=pos[n];
+            n--;
+		//NORTE SUR si no se sale de los límites, no es pared, no es caja, si antes de la caja hay espacio para el jugador, si el jugador puede llegar a ese espacio
+            if((nodo.i+1<tam)(nodo.i-1>0)&&(Mapa[nodo.i+1][nodo.j]!='*')&&(Mapa[nodo.i+1][nodo.j]!='C')&&(Mapa[nodo.i-1][nodo.j]!='*')&&(Mapa[nodo.i-1][nodo.j]!='C')){
+              //NORTE
+                if(PuedeLlegar(nodo.i-1,nodo.j)){
+                    nuevonodo.i=nodo.i+1;
+                    nuevonodo.j=nodo.j;
+                }
+                //SUR
+                if (PuedeLlegar(nodo.i+1,nodo.j)){
+                    nuevonodo.i=nodo.i-1;
+                    nuevonodo.j=nodo.j;
+                    }
+            }
+            //ESTE OESTE si no se sale de los límites, no es pared, no es caja, si antes de la caja hay espacio para el jugador, si el jugador puede llegar a ese espacio
+            if((nodo.j+1<tam)(nodo.j-1>0)&&(Mapa[nodo.i][nodo.j+1]!='*')&&(Mapa[nodo.i][nodo.j+1]!='C')&&(Mapa[nodo.i][nodo.j-1]!='*')&&(Mapa[nodo.i][nodo.j-1]!='C')){
+              //ESTE
+                if(PuedeLlegar(nodo.i,nodo.j-1)){
+                    nuevonodo.i=nodo.i;
+                    nuevonodo.j=nodo.j+1;
+                }
+                //OESTE
+                if (PuedeLlegar(nodo.i,nodo.j+1)){
+                    nuevonodo.i=nodo.i;
+                    nuevonodo.j=nodo.j-1;
+                    }
+            }
+		}
+            //---------------CADA REGLA FIN
 
 		//por cada regla que se puede aplicar crear un nodonuevo
 		//{
@@ -84,6 +124,7 @@ void NodePushSuccessors( priority_queue<NODO> OPEN, list<NODO> CLOSE, NODO paren
 			{
 				continue;
 			}
+
 				remove nodonuevo from the OPEN list if it is on it
 				remove nodonuevo from the CLOSED list if it is on it
 				nodonuevo.parent = parent_node
@@ -91,6 +132,8 @@ void NodePushSuccessors( priority_queue<NODO> OPEN, list<NODO> CLOSE, NODO paren
 		//}
 }
 */
+
+if ())
 int main( )
 {
 	char entrada[100];
@@ -99,11 +142,11 @@ int main( )
 	f=fopen("entrada.txt","r");
 
 	fgets(entrada, sizeof entrada, f);
-	int tam=strlen(entrada);
+	tam=strlen(entrada);
 	tam=pow(tam,0.5);
 	printf(" %i \n", tam);
 	fclose(f);
-	int a;
+	int a,f=c=0;
 
 	for (int i=0; i<tam;i++)
 	{
@@ -113,12 +156,29 @@ int main( )
 			Mapa[i][j]=entrada[x];
 
 			if (entrada[x]=='J'){
-				iinicial=i;
-				jinicial=j;
+				Ji=i;
+				Jj=j;
+			}
+			if (entrada[x]=='C'){
+				Ci[c]=i;
+				Cj[c]=j;
+				c++;
+			}
+			if (entrada[x]=='C'){
+				Fi[c]=i;
+				Fj[c]=j;
+				f++;
 			}
 			x++;
 
 		}
+	}
+	for (int i=0; i<=c;i++){
+    iinicial=Ci[i];
+    jinicial=Cj[i];
+    ifinal=Fi[i];
+    jfinal=Fj[i];
+	Astar();
 	}
 	//IMPRIMIR MATRIZ
    for (int i=0; i<tam;i++)
